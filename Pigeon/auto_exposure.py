@@ -32,10 +32,10 @@ with PiCamera() as camera:
         img = np.array(frame.array)
         avg_box_lum = calculate_avg_box_lum(img)
         if avg_box_lum > MIN_LUM or avg_box_lum > MAX_LUM:
+            rawCapture.truncate(0)
+            rawCapture.seek(0)
             exposure_step_size = ALPHA * (TARGET_LUM - avg_box_lum)
             target_exposure = camera.get_current_exposure() + exposure_step_size
             #rawCapture.truncate(0)
             camera.set_exposure(target_exposure)
             print("target exposure: " + str(target_exposure)) 
-            rawCapture.truncate(0)
-            rawCapture.seek(0)
