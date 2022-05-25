@@ -10,11 +10,14 @@ TARGET_LUM = math.floor(MIN_LUM + (MAX_LUM - MIN_LUM)/2)
 ALPHA = 0.25
 BOX_HEIGHT = 360
 BOX_WIDTH = 640
-WEIGHT_MATRIX = np.array([[1 if i in range (1920/2 - BOX_WIDTH/2, 1920/2 + BOX_WIDTH/2) else 0 for i in range(640)] if j in range(1080/2 - BOX_HEIGHT/2, 1080/2 + BOX_HEIGHT/2) else [0 for i in range(1920)] for j in range(1080)])
-NORMALIZATION_FACTOR = 1/(np.max(WEIGHT_MATRIX))
+WEIGHT_MATRIX = np.array([[1 if i in range (int(1920/2 - BOX_WIDTH/2), int(1920/2 + BOX_WIDTH/2)) else 0 for i in range(1920)] if j in range(int(1080/2 - BOX_HEIGHT/2), int(1080/2 + BOX_HEIGHT/2)) else [0 for i in range(1920)] for j in range(1080)])
+NORMALIZATION_FACTOR = 1/(np.max(np.max(WEIGHT_MATRIX)))
 
 def calculate_avg_box_lum(img):
-    flattened_img = np.add(img[0], img[1], img[2])
+    print(img.shape)
+    print(img[:][0][:].shape) 
+    flattened_img = np.add(np.add(img[:,:,0], img[:,:,1]), img[:,:,2])
+    print(WEIGHT_MATRIX.shape, flattened_img.shape)  
     weighted_box_lum = np.multiply(WEIGHT_MATRIX,flattened_img)
     return np.sum(weighted_box_lum) / (BOX_WIDTH * BOX_HEIGHT)
 
