@@ -7,7 +7,7 @@ from picamera.array import PiRGBArray
 MAX_LUM = 582
 MIN_LUM = 182
 TARGET_LUM = math.floor(MIN_LUM + (MAX_LUM - MIN_LUM)/2)
-ALPHA = 0.25
+ALPHA = 0.75
 BOX_HEIGHT = 360
 BOX_WIDTH = 640
 CAMERA_WIDTH = 1920
@@ -36,9 +36,9 @@ with PiCamera() as camera:
         if avg_box_lum < MIN_LUM or avg_box_lum > MAX_LUM:
             exposure_step_size = ALPHA * (TARGET_LUM - avg_box_lum)
             print('getting target exposure')
-            target_exposure = camera.exposure_speed + exposure_step_size
+            target_exposure = int(camera.shutter_speed + exposure_step_size)
             #rawCapture.truncate(0)
             print("target exposure: " + str(target_exposure)) 
-            camera.exposure_speed = target_exposure
+            camera.shutter_speed = target_exposure
         rawCapture.truncate(0)
         rawCapture.seek(0)
