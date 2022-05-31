@@ -30,12 +30,15 @@ with PiCamera() as camera:
 
     for frame in camera.capture_continuous(rawCapture, format='bgr', use_video_port=True):
         img = np.array(frame.array)
+        print('getting avg boc lum')
         avg_box_lum = calculate_avg_box_lum(img)
-        if avg_box_lum > MIN_LUM or avg_box_lum > MAX_LUM:
-            rawCapture.truncate(0)
-            rawCapture.seek(0)
+        print('avg box lum: ' + str(avg_box_lum)) 
+        if avg_box_lum < MIN_LUM or avg_box_lum > MAX_LUM:
             exposure_step_size = ALPHA * (TARGET_LUM - avg_box_lum)
-            target_exposure = camera.get_current_exposure() + exposure_step_size
+            print('getting target exposure')
+            target_exposure = camera.exposure_speed + exposure_step_size
             #rawCapture.truncate(0)
-            camera.set_exposure(target_exposure)
             print("target exposure: " + str(target_exposure)) 
+            camera.exposure_speed = target_exposure
+        rawCapture.truncate(0)
+        rawCapture.seek(0)
